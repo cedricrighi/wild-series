@@ -35,6 +35,50 @@ const read: RequestHandler = (req, res) => {
   }
 };
 
+const edit: RequestHandler = (req, res) => {
+  const id = Number.parseInt(req.params.id);
+  const { category } = req.body;
+
+  const result = categoryRepository.update(id, category);
+
+  res.json(result);
+};
+
+const add: RequestHandler = (req, res) => {
+  const category = req.body;
+
+  const result = categoryRepository.create(category);
+
+  res.json(result);
+};
+
+const destroy: RequestHandler = (req, res) => {
+  const id = Number.parseInt(req.params.id);
+
+  const result = categoryRepository.delete(id);
+
+  res.json(result);
+};
+
+const validate: RequestHandler = (req, res, next) => {
+  type ValidationError = {
+    field: string;
+    message: string;
+  };
+
+  const errors: ValidationError[] = [];
+
+  const { name } = req.body;
+
+  // put your validation rules here
+
+  if (errors.length === 0) {
+    next();
+  } else {
+    res.status(400).json({ validationErrors: errors });
+  }
+};
+
 // Export them to import them somewhere else
 
-export default { browse, read };
+export default { browse, read, edit, add, destroy, validate };
